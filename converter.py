@@ -1,5 +1,5 @@
 import webbrowser, sys, subprocess, os
-from PySide2.QtWidgets import *
+from PySide2.QtWidgets import QFileDialog,QMainWindow,QMessageBox,QApplication
 from main import Ui_MainWindow
 import concurrent.futures
 

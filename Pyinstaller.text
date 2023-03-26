@@ -1,0 +1,1 @@
+pyinstaller --onefile --noconsole --icon=converter.ico --hidden-import=webbrowser --hidden-import=sys --hidden-import=subprocess --hidden-import=os --hidden-import=PySide2.QtWidgets --hidden-import=main --hidden-import=concurrent.futures converter.py
