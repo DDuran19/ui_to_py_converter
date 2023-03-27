@@ -28,6 +28,10 @@ class Ui_MainWindow(object):
         icon = QIcon()
         icon.addFile(u"converter.ico", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
+        MainWindow.setStyleSheet(u".QPushButton:hover{\n"
+"color: green;\n"
+"}")
+        MainWindow.setIconSize(QSize(32, 32))
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.compilerdirectory = QLineEdit(self.centralwidget)
@@ -66,6 +70,7 @@ class Ui_MainWindow(object):
         self.label_4 = QLabel(self.centralwidget)
         self.label_4.setObjectName(u"label_4")
         self.label_4.setGeometry(QRect(10, 180, 281, 71))
+        self.label_4.setLineWidth(1)
         self.label_4.setAlignment(Qt.AlignCenter)
         self.label_4.setWordWrap(True)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -79,7 +84,10 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Ui to Py converter by DDuran19", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"UI Compiling Assistant - DDuran19", None))
+#if QT_CONFIG(tooltip)
+        self.compilerdirectory.setToolTip(QCoreApplication.translate("MainWindow", u"will use PySide2-uic as default", None))
+#endif // QT_CONFIG(tooltip)
         self.label.setText(QCoreApplication.translate("MainWindow", u"UI compiler directory:", None))
         self.compilerbrowse.setText(QCoreApplication.translate("MainWindow", u"Browse", None))
         self.inputbrowse.setText(QCoreApplication.translate("MainWindow", u"Browse", None))
@@ -88,6 +96,6 @@ class Ui_MainWindow(object):
         self.outputbrowse.setText(QCoreApplication.translate("MainWindow", u"Browse", None))
         self.convertbutton.setText(QCoreApplication.translate("MainWindow", u"Convert Files", None))
         self.gotogithub.setText(QCoreApplication.translate("MainWindow", u"Go to GITHUB open source", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"An open source small project to conveniently use Pyside2/PYQT to convert ui files to python files. Will now add a .txt file containing all object names for easier coding, as well as creating a new GUI python fileDeveloped by Denver James Duran", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"An open source small project to conveniently use Pyside2/PYQT to convert ui files to python files. Will now add a .txt file containing all object names for easier coding, as well as creating a new GUI python file. Developed by Denver James Duran", None))
     # retranslateUi
 
