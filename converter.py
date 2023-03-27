@@ -33,6 +33,7 @@ class GuiProducts(QMainWindow):
             ui_file_paths = [path for path in file_paths if path.endswith(".ui")]
             # Set text of inputdirectory to comma-separated list of selected UI file paths
             self.ui.inputdirectory.setText(", ".join(ui_file_paths))
+            self.ui.outputdirectory.setText('/'.join([i for i in ui_file_paths[0].split('/')[:-1]]))
 
     def browse_for_output(self):
         folder_dialog = QFileDialog(self)
@@ -43,56 +44,56 @@ class GuiProducts(QMainWindow):
     
     def convert_ui_to_py(self):
         exe_path = self.ui.compilerdirectory.text()
+        if exe_path =='':
+            exe_path = f'PySide2-uic'
         input_directory = self.ui.inputdirectory.text()
         output_directory = self.ui.outputdirectory.text().split(',')[0].strip()
 
         # Check if any of the .py files have the same base name as the new .ui files
         input_directories = [os.path.dirname(d) for d in input_directory.split(',')]
 
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = []
-            for input_dir in input_directories:
-                for ui_file_name in os.listdir(input_dir):
-                    if ui_file_name.endswith(".ui"):
-                        ui_file_path = os.path.join(input_dir, ui_file_name)
-                        py_file_name = os.path.splitext(ui_file_name)[0] + ".py"
-                        py_file_path = os.path.join(output_directory, py_file_name)
-                        if os.path.exists(py_file_path):
-                            message = f"The file {py_file_name} already exists. Do you want to overwrite it?"
-                            reply = QMessageBox.question(self, "Warning", message, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                            if reply == QMessageBox.No:
-                                continue
-                        futures.append(executor.submit(self.convert_ui_file, exe_path, ui_file_path, py_file_path))
-            
-            for future in concurrent.futures.as_completed(futures):
-                ui_file_path, py_file_path = future.result()
-                self.process_py_file(py_file_path)
+        for input_dir in input_directories:
+            for ui_file_name in os.listdir(input_dir):
+                if ui_file_name.endswith(".ui"):
+                    ui_file_path = os.path.join(input_dir, ui_file_name)
+                    py_file_name = os.path.splitext(ui_file_name)[0] + ".py"
+                    py_file_path = os.path.join(output_directory, py_file_name)
+                    if os.path.exists(py_file_path):
+                        message = f"The file {py_file_name} already exists. Do you want to overwrite it?"
+                        reply = QMessageBox.question(self, "Warning", message, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                        if reply == QMessageBox.No:
+                            continue
+                    self.convert_ui_file(exe_path, ui_file_path, py_file_path)
+                    self.process_py_file(py_file_path)
+
 
     def convert_ui_file(self, exe_path, ui_file_path, py_file_path):
         subprocess.run([exe_path, ui_file_path, "-o", py_file_path])
-        return ui_file_path, py_file_path
+        return 
 
     def process_py_file(self, py_file_path):
         names=[]
-        try:
-            with open(py_file_path, 'r') as py_file:
-                class_name = ''
-                for line in py_file:
-                    if 'class Ui_' in line:
-                        class_name = line.split()[1].split("(")[0]
-                        names.append(f'window name: {class_name}')   
-                    if '=' in line:
-                        try:
-                            object_name = line[line.index('.')+1:].split()[0].lstrip('(')
-                            object_type = line[line.index('=')+1:].split()[0].split('(')[0]
-                            if object_name in names:
-                                continue
-                            names.append(f'self.ui.{object_name}  --> {object_type}')
-                        except Exception as e:
+        with open(py_file_path, 'r') as py_file:
+            class_name = ''
+            for line in py_file:
+                if 'class Ui_' in line:
+                    class_name = line.split()[1].split("(")[0]
+                    names.append(f'window name: {class_name}')   
+                if '=' in line:
+                    try:
+                        object_name = line[line.index('.')+1:].split()[0].lstrip('(')
+                        object_type = line[line.index('=')+1:].split()[0].split('(')[0]
+                        if object_name in names:
                             continue
-            with open(py_file_path.replace('.py', '.txt'), 'a') as txt_file:
-                for name in names:
-                    txt_file.write(f'{name}\n')
+                        names.append(f'self.ui.{object_name}  --> {object_type}')
+                    except Exception as e:
+                        continue
+        try:
+            reply = QMessageBox.question(None, '', 'Would you like to add txt file containing all object names?', QMessageBox.No | QMessageBox.Yes, QMessageBox.No)
+            if reply == QMessageBox.Yes:
+                with open(py_file_path.replace('.py', '.txt'), 'w') as txt_file:
+                    for name in names:
+                        txt_file.write(f'{name}\n')
             
             reply = QMessageBox.question(None, '', 'Would you like to add _gui file?', QMessageBox.No | QMessageBox.Yes, QMessageBox.No)
             if reply == QMessageBox.Yes:
@@ -102,10 +103,10 @@ class GuiProducts(QMainWindow):
                     gui_file.write(f'from {file_name} import {class_name}\n\
 import sys \n\
 from PySide2.QtWidgets import QApplication,QMainWindow\n\n\
-class {file_name}(QMainWindow):\n\
+class {file_name.title()}(QMainWindow):\n\
     def __init__(self):\n\
         super().__init__()\n\
-        self.ui={class_name}\n\
+        self.ui={class_name}()\n\
         self.ui.setupUi(self)\n\
 \n\
 # Delete these if not needed\n\

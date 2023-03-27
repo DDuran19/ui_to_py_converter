@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>304</width>
-    <height>266</height>
+    <height>293</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -16,8 +16,24 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>304</width>
+    <height>293</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>304</width>
+    <height>293</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Ui to Py converter by DDuran19</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>converter.ico</normaloff>converter.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLineEdit" name="compilerdirectory">
@@ -160,11 +176,11 @@
       <x>10</x>
       <y>180</y>
       <width>281</width>
-      <height>51</height>
+      <height>71</height>
      </rect>
     </property>
     <property name="text">
-     <string>An open source small project to conveniently use Pyside2/PYQT to convert ui files to python files. Developed by Denver James Duran</string>
+     <string>An open source small project to conveniently use Pyside2/PYQT to convert ui files to python files. Will now add a .txt file containing all object names for easier coding, as well as creating a new GUI python fileDeveloped by Denver James Duran</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -173,16 +189,6 @@
      <bool>true</bool>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>304</width>
-     <height>21</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
